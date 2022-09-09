@@ -3,7 +3,15 @@ from routers import langs, versions, datablocks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
+from pydantic import BaseModel
+import os
+from starlette.responses import FileResponse 
 
+
+class Item(BaseModel):
+    login: str
+    password: str
+    
 
 app = FastAPI()
 
@@ -29,9 +37,11 @@ class SPAStaticFiles(StaticFiles):
             response = await super().get_response('.', scope)
         return response
 
-app.mount('/', SPAStaticFiles(directory='astraia-db-front/build/', html=True), name='whatever')
+#app.mount('/', SPAStaticFiles(directory='build/', html=True), name='spa')
+
+#app.mount("/", StaticFiles(directory="build", html=True), name="static")
 
 
 # uvicorn main:app --reload
-if __name__ == "__main__": 
-    uvicorn.run(app, host="0.0.0.0", workers=1, port=8000)
+#if __name__ == "__main__": 
+#    uvicorn.run(app, host="0.0.0.0", workers=1, port=8000)

@@ -10,12 +10,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-LOGIN = os.getenv('LOGIN')
-PASSWD = os.getenv('PASSWD')
-DBNAME = os.getenv('DBNAME')
-COMPANY = os.getenv('COMPANY')
-APPLICATION = os.getenv('APPLICATION')
-SIGNATURE = os.getenv('SIGNATURE')
+LOGIN = os.getenv('LOGIN', 'dba')
+PASSWD = os.getenv('PASSWD', 'soot')
+DBNAME = os.getenv('DBNAME', 'rhea_developmentdb12')
+COMPANY = os.getenv('COMPANY', 'Astraia Software GmbH')
+APPLICATION = os.getenv('APPLICATION', 'astraia')
+SIGNATURE = os.getenv('SIGNATURE', '000fa55157edb8e14d818eb4fe3db41447146f1571g41642fefdd31cdd001026203dbcafb69fc384292')
 
 conn_str = f"sybase+pyodbc://{LOGIN}:{PASSWD}@{DBNAME}"
 

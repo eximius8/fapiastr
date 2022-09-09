@@ -1,6 +1,8 @@
 from models.datablock import DataBlock
 from fastapi import APIRouter
 from dbutils.dbconnect import loadSession, engine
+import xmltodict
+
 
 
 router = APIRouter()
@@ -31,5 +33,6 @@ async def read_lang(
     if datablock is None:
         return {'error': 'Does not exist'}
     session.close()
-    print(datablock)
-    return  datablock
+    dict_data = xmltodict.parse(datablock.contents) 
+    return datablock
+    return {'main': datablock, 'contents': dict_data['block']['item']}
