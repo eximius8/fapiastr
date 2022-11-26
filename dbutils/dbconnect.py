@@ -19,12 +19,12 @@ SIGNATURE = os.getenv('SIGNATURE', '000fa55157edb8e14d818eb4fe3db41447146f1571g4
 
 conn_str = f"sybase+pyodbc://{LOGIN}:{PASSWD}@{DBNAME}"
 
-sybase = True
+sybase = False
 
 if sybase:
     engine = create_engine(conn_str, poolclass=NullPool)
 else:
-    engine = create_engine('postgresql+psycopg2://astraia:astraia@192.168.50.91/astraia-test')
+    engine = create_engine('postgresql+psycopg2://postgres:Sc_w4b_ng0l8@localhost/astraia-dev')
 
 
 
