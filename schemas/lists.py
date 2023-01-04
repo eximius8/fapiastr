@@ -2,10 +2,7 @@ from typing import Union
 from pydantic import BaseModel
 
 
-class ListBase(BaseModel):
-    id: int
-    listname: str
-    version: int
+class ListBase(BaseModel):    
 
     defaultitem: Union[bool, None] = None
     alert: Union[bool, None] = None
@@ -23,7 +20,24 @@ class ListBase(BaseModel):
         orm_mode = True
         allow_population_by_field_name = True
 
-class ListsList(BaseModel):
+class ListObject(ListBase):
 
-    count: int    
-    items: list[ListBase]
+    id: int
+    listname: str
+    version: int
+
+
+class CreateListObject(ListObject):
+    pass
+
+
+class UpdateListObject(ListBase):
+    pass
+
+
+#class ListsList(BaseModel):
+#
+#    count: int
+#    next: int
+#    items: list[ListBase]
+#

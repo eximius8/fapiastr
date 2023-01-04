@@ -41,7 +41,7 @@ class DictionarBase(BaseModel):
         orm_mode = True
         allow_population_by_field_name = True
 
-class DictionarList(BaseModel):
-
-    count: int    
-    items: list[DictionarBase]
+#class DictionarList(BaseModel):
+#
+#    count: int    
+#    items: list[DictionarBase]
