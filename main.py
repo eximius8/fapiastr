@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import langs, versions, datablocks, dictionar
+from routers import langs, versions, datablocks, dictionar, lists
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
@@ -24,6 +24,7 @@ app.include_router(langs.router)
 app.include_router(versions.router)
 app.include_router(datablocks.router)
 app.include_router(dictionar.router)
+app.include_router(lists.router)
 
 
 
