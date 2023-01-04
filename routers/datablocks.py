@@ -23,7 +23,7 @@ async def list_datablocks(
 
 
 @router.get("/api/datablock/{block}-{version}")
-async def read_lang(
+async def read_block(
         block: int,
         version: int
     ):

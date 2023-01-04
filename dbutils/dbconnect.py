@@ -12,35 +12,42 @@ load_dotenv()
 
 LOGIN = os.getenv('LOGIN', 'dba')
 PASSWD = os.getenv('PASSWD', 'soot')
-DBNAME = os.getenv('DBNAME', 'rhea_developmentdb12')
+DBNAME = os.getenv('DBNAME', 'astraia-dev')
 COMPANY = os.getenv('COMPANY', 'Astraia Software GmbH')
 APPLICATION = os.getenv('APPLICATION', 'astraia')
 SIGNATURE = os.getenv('SIGNATURE', '000fa55157edb8e14d818eb4fe3db41447146f1571g41642fefdd31cdd001026203dbcafb69fc384292')
 
 conn_str = f"sybase+pyodbc://{LOGIN}:{PASSWD}@{DBNAME}"
 
-sybase = False
 
-if sybase:
-    engine = create_engine(conn_str, poolclass=NullPool)
-else:
-    engine = create_engine('postgresql+psycopg2://postgres:Sc_w4b_ng0l8@localhost/astraia-dev')
+engine = create_engine(conn_str, poolclass=NullPool)
 
-
-
+SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base(engine)
 
 
 
 def loadSession():
     """Creating session for working with db"""
-    metadata = Base.metadata
+
     Session = sessionmaker(bind=engine)
-    session = Session(bind=engine)
-    if sybase:
-        with engine.connect() as con:
-            magicquery = f"SET TEMPORARY OPTION Connection_authentication='Company={COMPANY};Application={APPLICATION};Signature={SIGNATURE}'"
-            statement = text(magicquery)
-            con.execute(statement)
+    session = Session(bind=engine)    
+    with engine.connect() as con:
+        magicquery = f"SET TEMPORARY OPTION Connection_authentication='Company={COMPANY};Application={APPLICATION};Signature={SIGNATURE}'"
+        statement = text(magicquery)
+        con.execute(statement)
   
     return session
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+      
+    with engine.connect() as con:
+        magicquery = f"SET TEMPORARY OPTION Connection_authentication='Company={COMPANY};Application={APPLICATION};Signature={SIGNATURE}'"
+        statement = text(magicquery)
+        con.execute(statement)
+    try:
+        yield db
+    finally:
+        db.close()

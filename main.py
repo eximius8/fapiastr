@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import langs, versions, datablocks
+from routers import langs, versions, datablocks, dictionar
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
@@ -8,10 +8,7 @@ import os
 from starlette.responses import FileResponse 
 
 
-class Item(BaseModel):
-    login: str
-    password: str
-    
+   
 
 app = FastAPI()
 
@@ -26,6 +23,7 @@ app.add_middleware(
 app.include_router(langs.router)
 app.include_router(versions.router)
 app.include_router(datablocks.router)
+app.include_router(dictionar.router)
 
 
 
