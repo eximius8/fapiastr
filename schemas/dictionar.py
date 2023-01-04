@@ -9,7 +9,7 @@ class DictionarBase(BaseModel):
     dtype: str
     enable: str
 
-    defaultValue: Union[str, None] = None
+    defaultvalue: Union[str, None] = None
     minimum: Union[float, None] = None
     maximum: Union[float, None] = None
     dlist: Union[str, None] = None

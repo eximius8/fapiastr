@@ -10,7 +10,7 @@ class Dictionar(Base):
     dtype = Column('type', VARCHAR(length=2), nullable=False)
     enable = Column('enable', VARCHAR(length=255), nullable=False)
 
-    defaultValue = Column('defaultvalue', VARCHAR(length=255), nullable=True)
+    defaultvalue = Column('defaultvalue', VARCHAR(length=255), nullable=True)
     minimum = Column('minimum', FLOAT, nullable=True)
     maximum = Column('maximum', FLOAT, nullable=True)
     dlist = Column('list', VARCHAR(length=255), nullable=True)

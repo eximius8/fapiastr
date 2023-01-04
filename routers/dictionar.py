@@ -25,8 +25,11 @@ async def list_dict(
         cname: str = '',
         tname: str = ''
     ):
-    lendicts, dictionars = cruddict.get_dictionars(db=db, skip=start, limit=limit, tname=tname, cname=cname)    
-    return {"count": lendicts, "next": start+limit, "items": dictionars}
+    next = None
+    lendicts, dictionars = cruddict.get_dictionars(db=db, skip=start, limit=limit, tname=tname, cname=cname) 
+    if lendicts > start+limit:
+        next = start+limit
+    return {"count": lendicts, "next": next, "items": dictionars}
 
 
 @router.patch("/api/dict/{tname}/{cname}", response_model=DictionarBase)
