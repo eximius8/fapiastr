@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
 
 from dbutils.dbconnect import get_db
-import crud.dictionar as cruddict  
+import crud.dictionar as cruddict
+from schemas.dictionar import DictionarBase
 
 
 router = APIRouter()
@@ -26,3 +27,30 @@ async def list_dict(
     ):
     lendicts, dictionars = cruddict.get_dictionars(db=db, skip=start, limit=limit, tname=tname, cname=cname)    
     return {"count": lendicts, "next": start+limit, "items": dictionars}
+
+
+@router.patch("/api/dict/{tname}/{cname}", response_model=DictionarBase)
+async def update_dictionar(tname: str, cname: str, dictionar: DictionarBase, db: Session = Depends(get_db)):
+
+    updated_dict = cruddict.update_dictionar(db=db, cname=cname, tname=tname, dictionarweb=dictionar)
+    if updated_dict is None:
+        raise HTTPException(status_code=404, detail="Dictionary row not found")
+    return updated_dict
+
+
+@router.delete("/api/dict/{tname}/{cname}", status_code=204)
+async def delete_dictionar(tname: str, cname: str, db: Session = Depends(get_db)):
+    
+    if cruddict.delete_dictionar(db, tname=tname, cname=cname):
+        return {'status': 'deleted'}
+        
+    raise HTTPException(status_code=404, detail="Dictionary row not found")
+
+
+@router.post("/api/dict/", status_code=201)
+async def create_dictionar(dictionar: DictionarBase, db: Session = Depends(get_db)):
+
+    new_itm = cruddict.create_dictionar(db, dictionarweb=dictionar)
+    if new_itm:
+        return new_itm
+    raise HTTPException(status_code=400, detail="Error occurred") 
