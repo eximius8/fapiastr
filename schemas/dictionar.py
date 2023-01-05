@@ -4,8 +4,7 @@ from pydantic import BaseModel
 
 
 class DictionarBase(BaseModel):
-    tname: str
-    cname: str
+    
     dtype: str
     enable: str
 
@@ -41,7 +40,17 @@ class DictionarBase(BaseModel):
         orm_mode = True
         allow_population_by_field_name = True
 
-#class DictionarList(BaseModel):
-#
-#    count: int    
-#    items: list[DictionarBase]
+
+class DictionarSchema(DictionarBase):
+
+    tname: str
+    cname: str
+
+
+
+class CreateDictionarSchema(DictionarSchema):
+    pass
+
+
+class UpdateDictionarSchema(DictionarBase):
+    pass

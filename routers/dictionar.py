@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from dbutils.dbconnect import get_db
 import crud.dictionar as cruddict
-from schemas.dictionar import DictionarBase
+from schemas.dictionar import CreateDictionarSchema, UpdateDictionarSchema, DictionarSchema
+
 
 
 router = APIRouter()
@@ -32,8 +33,8 @@ async def list_dict(
     return {"count": lendicts, "next": next, "items": dictionars}
 
 
-@router.patch("/api/dict/{tname}/{cname}", response_model=DictionarBase)
-async def update_dictionar(tname: str, cname: str, dictionar: DictionarBase, db: Session = Depends(get_db)):
+@router.patch("/api/dict/{tname}/{cname}", response_model=DictionarSchema)
+async def update_dictionar(tname: str, cname: str, dictionar: UpdateDictionarSchema, db: Session = Depends(get_db)):
 
     updated_dict = cruddict.update_dictionar(db=db, cname=cname, tname=tname, dictionarweb=dictionar)
     if updated_dict is None:
@@ -51,7 +52,7 @@ async def delete_dictionar(tname: str, cname: str, db: Session = Depends(get_db)
 
 
 @router.post("/api/dict/", status_code=201)
-async def create_dictionar(dictionar: DictionarBase, db: Session = Depends(get_db)):
+async def create_dictionar(dictionar: CreateDictionarSchema, db: Session = Depends(get_db)):
 
     new_itm = cruddict.create_dictionar(db, dictionarweb=dictionar)
     if new_itm:

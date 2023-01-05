@@ -20,24 +20,17 @@ class ListBase(BaseModel):
         orm_mode = True
         allow_population_by_field_name = True
 
-class ListObject(ListBase):
+
+class ListSchema(ListBase):
 
     id: int
     listname: str
     version: int
 
 
-class CreateListObject(ListObject):
+class CreateListSchema(ListSchema):
     pass
 
 
-class UpdateListObject(ListBase):
+class UpdateListSchema(ListBase):
     pass
-
-
-#class ListsList(BaseModel):
-#
-#    count: int
-#    next: int
-#    items: list[ListBase]
-#

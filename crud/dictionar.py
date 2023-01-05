@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from schemas.dictionar import DictionarBase
+from schemas.dictionar import CreateDictionarSchema, UpdateDictionarSchema
 from models.dictionar import Dictionar
 
 
@@ -19,7 +19,7 @@ def get_dictionars(db: Session, skip: int = 0, limit: int = 100, cname: str = ""
     return query.count(), query.all()[skip:skip+limit]
     
 
-def update_dictionar(db: Session, tname: str, cname: str, dictionarweb: DictionarBase):
+def update_dictionar(db: Session, tname: str, cname: str, dictionarweb: UpdateDictionarSchema):
 
     stored_dictionar = db.query(Dictionar).get((tname, cname))
     if not stored_dictionar:
@@ -42,7 +42,7 @@ def delete_dictionar(db: Session, tname: str, cname: str):
         return True
 
 
-def create_dictionar(db: Session, dictionarweb: DictionarBase):
+def create_dictionar(db: Session, dictionarweb: CreateDictionarSchema):
 
     newdictdata = dictionarweb.dict(exclude_unset=True)
     if db.query(Dictionar).get((newdictdata['tname'], newdictdata['cname'])):

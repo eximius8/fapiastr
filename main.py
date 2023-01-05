@@ -3,7 +3,6 @@ from routers import langs, versions, datablocks, dictionar, lists
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-from pydantic import BaseModel
 import os
 from starlette.responses import FileResponse 
 
@@ -20,11 +19,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(langs.router)
-app.include_router(versions.router)
-app.include_router(datablocks.router)
-app.include_router(dictionar.router)
-app.include_router(lists.router)
+app.include_router(langs.router, tags=["langs"])
+app.include_router(versions.router, tags=["versions"])
+app.include_router(datablocks.router, tags=["datablocks"])
+app.include_router(dictionar.router, tags=["dictionaries"])
+app.include_router(lists.router, tags=["lists"])
 
 
 

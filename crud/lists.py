@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from schemas.lists import CreateListObject, UpdateListObject
+from schemas.lists import CreateListSchema, UpdateListSchema
 from models.lists import Listobject
 
 
@@ -27,7 +27,7 @@ def delete_list(db: Session, id: int, listname: str, version: int):
         return True
 
 
-def create_list(db: Session, listweb: CreateListObject):
+def create_list(db: Session, listweb: CreateListSchema):
 
     newlistdata = listweb.dict(exclude_unset=True)
     if db.query(Listobject).get((newlistdata['id'], newlistdata['listname'], newlistdata['version'])):
@@ -40,7 +40,7 @@ def create_list(db: Session, listweb: CreateListObject):
     return new_list
 
 
-def update_list(db: Session, id: int, listname: str, version: str, listweb: UpdateListObject):
+def update_list(db: Session, id: int, listname: str, version: str, listweb: UpdateListSchema):
 
     stored_list = db.query(Listobject).get((id, listname, version))
     if not stored_list:

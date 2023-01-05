@@ -3,13 +3,13 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from dbutils.dbconnect import get_db
 import crud.lists as crudlist
-from schemas.lists import ListObject, CreateListObject, UpdateListObject
+from schemas.lists import ListSchema, CreateListSchema, UpdateListSchema
 
 
 router = APIRouter()
 
 
-@router.get("/api/lists/{id}/{listname}/{version}", response_model=ListObject)
+@router.get("/api/lists/{id}/{listname}/{version}", response_model=ListSchema)
 async def read_list(id: int, listname: str, version: int, db: Session = Depends(get_db)):
     list_object = crudlist.get_list(db, id=id, listname=listname, version=version)
     if list_object is None:
@@ -40,8 +40,8 @@ async def delete_list(id: int, listname: str, version: int, db: Session = Depend
     raise HTTPException(status_code=404, detail="List row not found")
 
 
-@router.post("/api/list/", status_code=201, response_model=ListObject)
-async def create_list(listdata: CreateListObject, db: Session = Depends(get_db)):
+@router.post("/api/list/", status_code=201, response_model=ListSchema)
+async def create_list(listdata: CreateListSchema, db: Session = Depends(get_db)):
 
     new_itm = crudlist.create_list(db, listweb=listdata)
     if new_itm:
@@ -49,8 +49,8 @@ async def create_list(listdata: CreateListObject, db: Session = Depends(get_db))
     raise HTTPException(status_code=400, detail="Error occurred") 
 
 
-@router.patch("/api/list/{id}/{listname}/{version}", response_model=ListObject)
-async def update_list(id: int, listname: str, version: int, listweb: UpdateListObject, db: Session = Depends(get_db)):
+@router.patch("/api/list/{id}/{listname}/{version}", response_model=ListSchema)
+async def update_list(id: int, listname: str, version: int, listweb: UpdateListSchema, db: Session = Depends(get_db)):
 
     updated_list = crudlist.update_list(db=db, id=id, listname=listname, version=version, listweb=listweb)
     if updated_list is None:
