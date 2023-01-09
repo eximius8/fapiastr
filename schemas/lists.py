@@ -2,7 +2,7 @@ from typing import Union
 from pydantic import BaseModel
 
 
-class ListBase(BaseModel):    
+class ListBase(BaseModel):
 
     defaultitem: Union[bool, None] = None
     alert: Union[bool, None] = None

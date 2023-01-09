@@ -2,7 +2,7 @@ from pydantic import BaseModel, constr
 from typing import Optional
 
 
-class LangSchema(BaseModel):
+class LangBase(BaseModel):
     """Language model"""
     En: Optional[constr(max_length=2045)] 
     Fr: Optional[constr(max_length=2045)] 
@@ -45,6 +45,15 @@ class LangSchema(BaseModel):
     class Config:
         orm_mode = True
 
-class LangSchemaDNA(LangSchema):
 
-    DNA: Optional[int]
+class LangSchema(LangBase):
+
+    DNA: int
+
+
+class CreateLangSchema(LangBase):
+    pass
+
+
+class UpdateLangSchema(LangBase):
+    pass

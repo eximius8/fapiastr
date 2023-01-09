@@ -1,9 +1,9 @@
 from sqlalchemy import  Column, Integer
 from sqlalchemy.types import VARCHAR
-from dbutils.dbconnect import Base, loadSession, engine
+from dbutils.dbconnect import Base
 
 
-class Lang(Base):
+class LangObject(Base):
     """Language model"""
     DNA = Column('DNA', Integer, primary_key=True, autoincrement=True)
     En = Column('En', VARCHAR(length=4), nullable=True)
@@ -43,35 +43,5 @@ class Lang(Base):
     No = Column('No', VARCHAR(length=4), nullable=True)
     Lv = Column('Lv', VARCHAR(length=4), nullable=True)
     Et = Column('Et', VARCHAR(length=4), nullable=True)
-    
-    @classmethod
-    def setbydnalang(cls, language, **dna):
-        session = loadSession()        
-        for key, val in dna.items():
-            
-            langobjct = session.query(cls).get(int(key))            
-            setattr(langobjct, language, val)           
-
-        session.commit()
-        session.close()
-        print(f'Finished')
-        
-    
-    @classmethod
-    def getbydna(cls, *dna, language):
-        session = loadSession()
-        print('Session loaded')
-        value = {}
-        for val in dna:
-            langobjct = session.query(cls).get(val)
-            value[langobjct.DNA] = getattr(langobjct, language)
-            print(f'read DNA {val}')
-        session.commit()
-        print('Session commited')
-        session.close()
-        print('Session closed')
-        return value        
-
+       
     __tablename__ = 'Lang'
-
-

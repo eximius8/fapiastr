@@ -1,11 +1,33 @@
 from schemas.lang import LangSchema, LangSchemaDNA
-from models.lang import Lang
+from models.lang import LangO
 from models.datablock import DataBlock
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from dbutils.dbconnect import loadSession, engine
 from sqlalchemy.sql import text
 
 router = APIRouter()
+
+
+@router.get("/api/lists/")
+async def list_lists(
+        db: Session = Depends(get_db),
+        start: int = 0, 
+        limit: int = 10,
+        listname: str = ''
+    ):
+    next = None
+    lenlists, lists = crudlist.get_lists(db=db, skip=start, limit=limit, listname=listname) 
+    if lenlists > start+limit:
+        next = start+limit
+    return {"count": lenlists, "next": next, "items": lists}
+
+
+@router.get("/api/lists/{id}/{listname}/{version}", response_model=ListSchema)
+async def read_list(id: int, listname: str, version: int, db: Session = Depends(get_db)):
+    list_object = crudlist.get_list(db, id=id, listname=listname, version=version)
+    if list_object is None:
+        raise HTTPException(status_code=404, detail="List object not found")
+    return list_object
 
 
 @router.get("/api/lang/")
