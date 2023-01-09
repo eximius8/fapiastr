@@ -1,10 +1,18 @@
 from pydantic_xml import BaseXmlModel, attr
-from typing import Optional, Literal
+from typing import Optional, Literal, Dict
+
+
+class ItemCommonAll(BaseXmlModel):
+
+    __root__: Dict[str, str]
 
 
 class ItemCommon(BaseXmlModel):
 
-    #__root__: Dict[str, str]
+    assoc_enable: Optional[str] = attr(name='assoc_enable')
+    link: Optional[str] = attr(name='link')
+    ltype: Optional[str] = attr(name='ltype')
+    printif: Optional[str] = attr(name='printif')
 
     item_type: Literal['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'] = attr(name='type')
     tname: Optional[str] = attr(name='tname')

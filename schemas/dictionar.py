@@ -16,13 +16,13 @@ class DictionarBase(BaseModel):
     zeroallowed: Union[bool, None] = None
     required: Union[bool, None] = None
     anomaly: Union[bool, None] = None
-    length: Union[str, None] = None
+    length: Union[int, None] = None
     global_prop: Union[bool, None] = None
-    dna: Union[str, None] = None
-    dna_chart: Union[str, None] = None
+    dna: Union[int, None] = None
+    dna_chart: Union[int, None] = None
     minvalue: Union[float, None] = None
     maxvalue: Union[float, None] = None
-    special: Union[str, None] = None
+    special: Union[int, None] = None
     units: Union[int, None] = None
 
     flagged: Union[bool, None] = None
@@ -45,7 +45,6 @@ class DictionarSchema(DictionarBase):
 
     tname: str
     cname: str
-
 
 
 class CreateDictionarSchema(DictionarSchema):

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Union
 
-from schemas.datablock import Datablock, DatablockCreate, DatablockUpdate, DataBlockList
+from schemas.datablock import Datablock, DatablockXML, DatablockCreate, DatablockUpdate, DataBlockList
 import crud.datablock as cruddatablock
 from dbutils.dbconnect import get_db
 
@@ -15,6 +15,13 @@ from dbutils.dbconnect import get_db
 
 router = APIRouter()
 
+
+@router.get("/api/datablock/xml/{block}/{version}")
+def read_datablockxml(block: int, version: int, db: Session = Depends(get_db)):
+    datablock = cruddatablock.get_datablock(db, block=block, version=version)
+    if datablock is None:
+        raise HTTPException(status_code=404, detail="datablock not found")
+    return datablock
 
 
 @router.get("/api/datablock/{block}/{version}", response_model=Datablock)
@@ -42,10 +49,10 @@ def create_datablock(datablock: DatablockCreate, db: Session = Depends(get_db)):
     return cruddatablock.create_datablock(db=db, datablock=datablock)
 
 
-@router.patch("/api/datablock/{block}", response_model=Datablock)
-async def update_datablock(block: int, datablock: DatablockUpdate, db: Session = Depends(get_db)):
+@router.patch("/api/datablock/{block}/{version}", response_model=Datablock)
+async def update_datablock(block: int, version: int, datablock: DatablockUpdate, db: Session = Depends(get_db)):
 
-    return cruddatablock.update_datablock(db=db, block=block, datablock=datablock)
+    return cruddatablock.update_datablock(db=db, version=version, block=block, datablock=datablock)
 
 
 

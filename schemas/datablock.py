@@ -3,9 +3,21 @@ from typing import Union, List
 from pydantic import BaseModel
 from pydantic_xml import BaseXmlModel, attr, element
 
-from schemas.datablockcommon import ItemCommon
+from schemas.datablockcommon import ItemCommon, ItemCommonAll
 
 
+class ItemAll(ItemCommonAll):
+
+    #pk: str = attr(name='id', max_length=4, regex=r'^[1-9](\d+)?$')
+
+    def dict(self, *args, **kwargs):
+        
+        kwargs["exclude_none"] = True
+        return BaseXmlModel.dict(self, *args, **kwargs)
+
+
+
+# Specific itmes only 
 class Item(ItemCommon):    
     pk: str = attr(name='id', max_length=4, regex=r'^[1-9](\d+)?$')
     
@@ -54,6 +66,12 @@ class Datablock(DatablockBase):
     block: int
     version: int
     contents: Block 
+
+    class Config:
+        orm_mode = True
+
+
+class DatablockXML(BaseModel):
 
     class Config:
         orm_mode = True
