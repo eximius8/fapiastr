@@ -1,133 +1,58 @@
-from schemas.lang import LangSchema, LangSchemaDNA
-from models.lang import LangO
-from models.datablock import DataBlock
-from fastapi import APIRouter, Depends
-from dbutils.dbconnect import loadSession, engine
-from sqlalchemy.sql import text
+from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException
+from dbutils.dbconnect import get_db
+
+from schemas.lang import LangSchema, UpdateLangSchema, CreateLangSchema
+import crud.langcrud as crudlang 
+
 
 router = APIRouter()
 
 
-@router.get("/api/lists/")
-async def list_lists(
+@router.get("/api/langs/")
+async def list_langs(
         db: Session = Depends(get_db),
         start: int = 0, 
         limit: int = 10,
-        listname: str = ''
+        search: str = ''
     ):
     next = None
-    lenlists, lists = crudlist.get_lists(db=db, skip=start, limit=limit, listname=listname) 
-    if lenlists > start+limit:
+    lenlangs, langs = crudlang.get_langs(db=db, skip=start, limit=limit, search=search) 
+    if lenlangs > start+limit:
         next = start+limit
-    return {"count": lenlists, "next": next, "items": lists}
+    return {"count": lenlangs, "next": next, "items": langs}
 
 
-@router.get("/api/lists/{id}/{listname}/{version}", response_model=ListSchema)
-async def read_list(id: int, listname: str, version: int, db: Session = Depends(get_db)):
-    list_object = crudlist.get_list(db, id=id, listname=listname, version=version)
-    if list_object is None:
-        raise HTTPException(status_code=404, detail="List object not found")
-    return list_object
+@router.get("/api/langs/{dna}")
+async def read_lang(dna: int, db: Session = Depends(get_db)):
+    lang_object = crudlang.get_lang(db, dna=dna)
+    if lang_object is None:
+        raise HTTPException(status_code=404, detail="Lang object not found")
+    return lang_object
 
 
-@router.get("/api/lang/")
-async def list_lang(
-        start: int = 0, 
-        limit: int = 10, 
-        en: str = "", 
-        de: str = "", 
-        it: str = "", 
-        es: str = "", 
-        ru: str = "",
-    ):
-    session = loadSession()
-    langs = session.query(Lang)
-    if en:
-        langs = langs.filter(Lang.En.like(f'%{en}%'))
-    if de:
-        langs = langs.filter(Lang.De.like(f'%{de}%'))
-    if es:
-        langs = langs.filter(Lang.Es.like(f'%{es}%'))
-    if it:
-        langs = langs.filter(Lang.It.like(f'%{it}%'))
-    if ru:
-        langs = langs.filter(Lang.Ru.like(f'%{ru}%'))
-    langs = langs.order_by(Lang.DNA).all()
-    lengt = len(langs)
-    langs = langs[start:start+limit]
-    session.close()
-    return {"count": lengt, "next": start+limit, "items": langs}
-
-
-@router.get("/api/lang/{dna}")
-async def read_lang(dna: int):
-
-    session = loadSession()
-    lang = session.query(Lang).get(dna)
-    if lang is None:
-        return {'error': 'Does not exist'}
-    d = {}
-    for column in lang.__table__.columns:
-        d[column.name] = str(getattr(lang, column.name))
-    session.close()
-    return  d
-
-@router.get("/api/lang/{dna}/usage")
-async def read_lang(dna: int):
-
-    session = loadSession()
-    lang = session.query(Lang).get(dna)
-    if lang is None:
-        return {'error': 'Does not exist'}
-    dblocks = session.query(DataBlock).all()
-    d = []
-    for dblock in dblocks:
-        data = dblock.findDNA(dna)
-        if data:
-            d += [data]
-    session.close()
-    return  d
-
-@router.post("/api/lang/", response_model=LangSchemaDNA)
-async def update_lang(langdata: LangSchema):    
-   
-    seializedlang = langdata.dict(exclude_unset=True)
-    session = loadSession()
-    obj = session.query(Lang).order_by(Lang.DNA.desc()).all()[0:1] 
-    newDNA = obj[0].DNA + 1
-    d = {'DNA': newDNA}
-    rawsql1 = f"INSERT INTO Lang (DNA"
-    rawsql2 = f" VALUES ({newDNA}"    
-
-    for key, value in seializedlang.items():
-        rawsql1 += f",{key}"
-        rawsql2 += f",'{value}'"
-        d[key] = value 
-    rawsql = rawsql1 + ') ' + rawsql2 + ');'
-    with engine.connect() as con:
-        statement = text(rawsql)
-        con.execute(statement)
-
-    session.commit()
-    session.close()    
-    return d
-
-
-@router.patch("/api/lang/{dna}", response_model=LangSchema)
-async def update_lang(dna: int, langdata: LangSchema):    
-   
-    seializedlang = langdata.dict(exclude_unset=True)
-
-    session = loadSession()   
-    langdata = session.query(Lang).get(dna)
-
-    for key, value in seializedlang.items():
-        setattr(langdata, key, value) 
+@router.delete("/api/langs/{dna}", status_code=204)
+async def delete_lang(dna: int, db: Session = Depends(get_db)):
     
-    d = {}
-    for column in langdata.__table__.columns:
-        d[column.name] = str(getattr(langdata, column.name))
+    if crudlang.delete_lang(db, dna=dna):
+        return {'status': 'deleted'}
+        
+    raise HTTPException(status_code=404, detail="Lang row not found")
 
-    session.commit()
-    session.close()
-    return d
+
+@router.post("/api/langs/", status_code=201, response_model=LangSchema)
+async def create_lang(langdata: CreateLangSchema, db: Session = Depends(get_db)):
+
+    new_itm = crudlang.create_lang(db, langweb=langdata)
+    if new_itm:
+        return new_itm
+    raise HTTPException(status_code=400, detail="Error occurred") 
+
+
+@router.patch("/api/langs/{dna}", response_model=LangSchema)
+async def update_lang(dna: int, langweb: UpdateLangSchema, db: Session = Depends(get_db)):
+
+    updated_lang = crudlang.update_lang(db=db, dna=dna, langweb=langweb)
+    if updated_lang is None:
+        raise HTTPException(status_code=404, detail="Lang row not found")
+    return updated_lang

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from schemas.lang import CreateLangSchema, UpdateLangSchema
 from models.lang import LangObject
@@ -32,11 +33,24 @@ def delete_lang(db: Session, dna: int):
 def create_lang(db: Session, langweb: CreateLangSchema):
     """Create lang item"""
 
-    new_lang = LangObject(**langweb.dict(exclude_unset=True))
-    db.add(new_lang)
-    db.commit()
-    db.refresh(new_lang)
-    return new_lang
+    # get last lang DNA
+    seializedlang = langweb.dict(exclude_unset=True)
+    last_obj = db.query(LangObject).order_by(LangObject.DNA.desc()).all()[0:1]
+    newDNA = last_obj[0].DNA + 1
+
+    d = {'DNA': newDNA}
+    rawsql1 = f"INSERT INTO Lang (DNA"
+    rawsql2 = f" VALUES ({newDNA}"    
+
+    for key, value in seializedlang.items():
+        rawsql1 += f",{key}"
+        rawsql2 += f",'{value}'"
+        d[key] = value 
+    rawsql = rawsql1 + ') ' + rawsql2 + ');'
+    statement = text(rawsql)
+    engine = db.get_bind()
+    engine.execute(statement)
+    return db.query(LangObject).get(newDNA)
 
 
 def update_lang(db: Session,  dna: int, langweb: UpdateLangSchema):
