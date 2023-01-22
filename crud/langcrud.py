@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import text
-
+from sqlalchemy import text, desc
+from dbutils.dbconnect import MAGICQUERY
 from schemas.lang import CreateLangSchema, UpdateLangSchema
 from models.lang import LangObject
 
@@ -13,9 +13,9 @@ def get_lang(db: Session, dna: int):
 def get_langs(db: Session, skip: int = 0, limit: int = 100, search: str = ""):
     """Get multiple lang objects"""
 
-    query = db.query(LangObject)
+    query = db.query(LangObject).order_by(desc(LangObject.dna))
     if search:
-        query = query.filter(LangObject.En.like(f'%{search}%'))
+        query = query.filter(LangObject.en.like(f'%{search}%'))
     
     return query.count(), query.all()[skip:skip+limit]
 
@@ -35,8 +35,8 @@ def create_lang(db: Session, langweb: CreateLangSchema):
 
     # get last lang DNA
     seializedlang = langweb.dict(exclude_unset=True)
-    last_obj = db.query(LangObject).order_by(LangObject.DNA.desc()).all()[0:1]
-    newDNA = last_obj[0].DNA + 1
+    last_obj = db.query(LangObject).order_by(LangObject.dna.desc()).all()[0:1]
+    newDNA = last_obj[0].dna + 1
 
     d = {'DNA': newDNA}
     rawsql1 = f"INSERT INTO Lang (DNA"
@@ -49,6 +49,10 @@ def create_lang(db: Session, langweb: CreateLangSchema):
     rawsql = rawsql1 + ') ' + rawsql2 + ');'
     statement = text(rawsql)
     engine = db.get_bind()
+
+    
+    magic = text(MAGICQUERY)
+    engine.execute(magic)
     engine.execute(statement)
     return db.query(LangObject).get(newDNA)
 
