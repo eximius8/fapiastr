@@ -39,6 +39,17 @@ class DataBlock(Base):
     tag = Column('tag', VARCHAR(length=10), nullable=True)
     typename = Column('typename', VARCHAR(length=255), nullable=True)
 
+    def get_xml(self):        
+
+        root = ET.Element("root")
+        block = ET.fromstring(self._contents.decode('utf-8'))
+        root.insert(0, block)
+        blocknum = ET.SubElement(root, "num").text = str(self.block)
+        blockversion = ET.SubElement(root, "ver").text = str(self.version)
+        date
+    
+        return ET.tostring(root)
+
     @property
     def contents(self):
         block = Block.from_xml(self._contents.decode('utf-8'))
