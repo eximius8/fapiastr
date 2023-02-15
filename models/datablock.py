@@ -21,26 +21,23 @@ class DataBlock(Base):
     block = Column('block', Integer, nullable=False)
     version = Column('version', SmallInteger, nullable=False)
 
-    tabtable = Column('tabtable', VARCHAR(length=31), nullable=True)
-    dnatitle = Column('dna_title', Integer, nullable=True)
-    tabname = Column('tabname', Integer, nullable=True)
-    tabnew = Column('tabnew', Integer, nullable=True)
-    details = Column('details', VARCHAR(length=255), nullable=True)
-    description = Column('description', VARCHAR(length=255), nullable=True) 
-    dnainfo = Column('dna_info', Integer, nullable=True)
     _contents = Column('contents', LargeBinary, nullable=True)   
-    typename = Column('typename', VARCHAR(length=255), nullable=True)
-    
-    layout = Column('layout', SmallInteger, nullable=True)
-    sset = Column('sset', VARCHAR(length=3), nullable=True)
-    helpid = Column('helpid', VARCHAR(length=40), nullable=True)
-    tag = Column('tag', VARCHAR(length=10), nullable=True)
-
     created_at = Column('created_at', DATETIME, nullable=True)
     creator = Column('creator', VARCHAR(length=20), nullable=True)
+    description = Column('description', VARCHAR(length=255), nullable=True) 
+    details = Column('details', VARCHAR(length=255), nullable=True)
+    dna_info = Column('dna_info', Integer, nullable=True)
+    dna_print = Column('dna_print', Integer, nullable=True)
+    dna_title = Column('dna_title', Integer, nullable=True)
+    helpid = Column('helpid', VARCHAR(length=40), nullable=True)
     issue = Column('issue', VARCHAR(length=20), nullable=True)
-    dnaprint = Column('dna_print', Integer, nullable=True)
-
+    layout = Column('layout', SmallInteger, nullable=True)
+    sset = Column('sset', VARCHAR(length=3), nullable=True)
+    tabname = Column('tabname', Integer, nullable=True)
+    tabnew = Column('tabnew', Integer, nullable=True)
+    tabtable = Column('tabtable', VARCHAR(length=31), nullable=True)
+    tag = Column('tag', VARCHAR(length=10), nullable=True)
+    typename = Column('typename', VARCHAR(length=255), nullable=True)
 
     @property
     def contents(self):
