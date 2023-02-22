@@ -44,10 +44,41 @@ class DataBlock(Base):
         root = ET.Element("root")
         block = ET.fromstring(self._contents.decode('utf-8'))
         root.insert(0, block)
-        blocknum = ET.SubElement(root, "num").text = str(self.block)
-        blockversion = ET.SubElement(root, "ver").text = str(self.version)
-        date
-    
+        blocknum = ET.SubElement(root, "number").text = str(self.block)
+        blockversion = ET.SubElement(root, "version").text = str(self.version)
+        if self.created_at:
+            ET.SubElement(root, "createdat").text = str(self.created_at.strftime("%d.%m.%Y"))
+        if self.creator:
+            ET.SubElement(root, "creator").text = str(self.creator)
+        if self.description:
+            ET.SubElement(root, "description").text = str(self.description)
+        if self.details:
+            ET.SubElement(root, "details").text = str(self.details)
+        if self.dna_info:
+            ET.SubElement(root, "dnainfo").text = str(self.dna_info)
+        if self.dna_print:
+            ET.SubElement(root, "dnaprint").text = str(self.dna_print)
+        if self.dna_title:
+            ET.SubElement(root, "dnatitle").text = str(self.dna_title)
+        if self.helpid:
+            ET.SubElement(root, "helpid").text = str(self.helpid)
+        if self.issue:
+            ET.SubElement(root, "issue").text = str(self.issue)
+        if self.layout:
+            ET.SubElement(root, "layout").text = str(self.layout)
+        if self.sset:
+            ET.SubElement(root, "sset").text = str(self.sset)
+        if self.tabname:
+            ET.SubElement(root, "tabname").text = str(self.tabname)
+        if self.tabnew:
+            ET.SubElement(root, "tabnew").text = str(self.tabnew)
+        if self.tabtable:
+            ET.SubElement(root, "tabtable").text = str(self.tabtable)
+        if self.tag:
+            ET.SubElement(root, "tag").text = str(self.tag)
+        if self.typename:
+            ET.SubElement(root, "typename").text = str(self.typename)
+        ET.indent(root)
         return ET.tostring(root)
 
     @property
