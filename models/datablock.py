@@ -19,11 +19,11 @@ class Block(BaseXmlModel, tag='block'):
 class DataBlock(Base):
     """Language model"""
     block = Column('block', Integer, nullable=False)
-    version = Column('version', SmallInteger, nullable=False)
+    #version = Column('version', SmallInteger, nullable=False)
 
     _contents = Column('contents', LargeBinary, nullable=True)   
-    created_at = Column('created_at', DATETIME, nullable=True)
-    creator = Column('creator', VARCHAR(length=20), nullable=True)
+    #created_at = Column('created_at', DATETIME, nullable=True)
+    #creator = Column('creator', VARCHAR(length=20), nullable=True)
     description = Column('description', VARCHAR(length=255), nullable=True) 
     details = Column('details', VARCHAR(length=255), nullable=True)
     dna_info = Column('dna_info', Integer, nullable=True)
@@ -36,7 +36,7 @@ class DataBlock(Base):
     tabname = Column('tabname', Integer, nullable=True)
     tabnew = Column('tabnew', Integer, nullable=True)
     tabtable = Column('tabtable', VARCHAR(length=31), nullable=True)
-    tag = Column('tag', VARCHAR(length=10), nullable=True)
+    #tag = Column('tag', VARCHAR(length=10), nullable=True)
     typename = Column('typename', VARCHAR(length=255), nullable=True)
 
     def get_xml(self):        
@@ -45,11 +45,11 @@ class DataBlock(Base):
         block = ET.fromstring(self._contents.decode('utf-8'))
         root.insert(0, block)
         blocknum = ET.SubElement(root, "number").text = str(self.block)
-        blockversion = ET.SubElement(root, "version").text = str(self.version)
-        if self.created_at:
-            ET.SubElement(root, "createdat").text = str(self.created_at.strftime("%d.%m.%Y"))
-        if self.creator:
-            ET.SubElement(root, "creator").text = str(self.creator)
+        #blockversion = ET.SubElement(root, "version").text = str(self.version)
+        #if self.created_at:
+        #    ET.SubElement(root, "createdat").text = str(self.created_at.strftime("%d.%m.%Y"))
+        #if self.creator:
+        #    ET.SubElement(root, "creator").text = str(self.creator)
         if self.description:
             ET.SubElement(root, "description").text = str(self.description)
         if self.details:
@@ -74,8 +74,8 @@ class DataBlock(Base):
             ET.SubElement(root, "tabnew").text = str(self.tabnew)
         if self.tabtable:
             ET.SubElement(root, "tabtable").text = str(self.tabtable)
-        if self.tag:
-            ET.SubElement(root, "tag").text = str(self.tag)
+        #if self.tag:
+        #    ET.SubElement(root, "tag").text = str(self.tag)
         if self.typename:
             ET.SubElement(root, "typename").text = str(self.typename)
         ET.indent(root)
@@ -94,7 +94,7 @@ class DataBlock(Base):
 
     __tablename__ = 'DataBlock'
     __table_args__ = (
-        PrimaryKeyConstraint(block, version),        
+        PrimaryKeyConstraint(block), #, version        
     )
 
 #    def findUnits(self):        
@@ -131,8 +131,3 @@ class DataBlock(Base):
 #            return {**dnasinit, **dnas}
 #        
         
-
-    __tablename__ = 'DataBlock'
-    __table_args__ = (
-        PrimaryKeyConstraint(block, version),        
-    )

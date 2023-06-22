@@ -1,7 +1,20 @@
 from sqlalchemy.orm import Session
 
 from models.datablock import DataBlock
+from models.sequences import Sequence, SequenceData
 from schemas.datablock import DatablockCreate, DatablockUpdate
+
+
+
+def get_datablock_location_sequences(db: Session, block: int):
+
+    blockobj = db.query(DataBlock).get(block)
+    sequences = db.query(SequenceData).filter(SequenceData.block==block)
+    if sequences.count() < 1:
+        return False
+    if sequences.count() == 1:
+
+    
 
 
 def get_datablock(db: Session, block: int, version: int):

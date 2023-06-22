@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 LOGIN = os.getenv('LOGIN', 'dba')
-PASSWD = os.getenv('PASSWD', 'soot')
-DBNAME = os.getenv('DBNAME', 'astraiadev')
+PASSWD = os.getenv('PASSWD', 'schwabing')
+DBNAME = os.getenv('DBNAME', 'astraiana')
 COMPANY = os.getenv('COMPANY', 'Astraia Software GmbH')
 APPLICATION = os.getenv('APPLICATION', 'astraia')
 SIGNATURE = os.getenv('SIGNATURE', '000fa55157edb8e14d818eb4fe3db41447146f1571g41642fefdd31cdd001026203dbcafb69fc384292')
