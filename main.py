@@ -41,5 +41,5 @@ class SPAStaticFiles(StaticFiles):
 
 
 # uvicorn main:app --reload
-#if __name__ == "__main__": 
-#    uvicorn.run(app, host="0.0.0.0", workers=1, port=8000)
+if __name__ == "__main__": 
+    uvicorn.run(app, host="0.0.0.0", workers=1, port=8001)

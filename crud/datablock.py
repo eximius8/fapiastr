@@ -8,11 +8,16 @@ from schemas.datablock import DatablockCreate, DatablockUpdate
 
 def get_datablock_location_sequences(db: Session, block: int):
 
+    pass
+    
+
+def get_datablock_location_sequences(db: Session, block: int):
+
     blockobj = db.query(DataBlock).get(block)
     sequences = db.query(SequenceData).filter(SequenceData.block==block)
     if sequences.count() < 1:
         return False
-    if sequences.count() == 1:
+    #if sequences.count() == 1:
 
     
 
@@ -44,9 +49,9 @@ def update_datablock(db: Session, block: int, version: int, datablock: Datablock
 
 def create_datablock(db: Session, datablock: DatablockCreate):
 
-    last_block = db.query(DataBlock).order_by(DataBlock.block.desc()).first().block
+    #last_block = db.query(DataBlock).order_by(DataBlock.block.desc()).first().block
     
-    db_datablock = DataBlock(**datablock.dict(), block=last_block+1)
+    db_datablock = DataBlock(**datablock.dict())
     db.add(db_datablock)
     db.commit()
     db.refresh(db_datablock)
