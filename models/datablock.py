@@ -1,5 +1,5 @@
 from dbutils.dbconnect import Base
-from typing import List
+from typing import List, Union
 from pydantic_xml import BaseXmlModel, attr, element
 from sqlalchemy import Column, Integer, SmallInteger, LargeBinary, PrimaryKeyConstraint
 from sqlalchemy.types import VARCHAR, DATETIME
@@ -13,13 +13,23 @@ class Item(ItemCommon):
     
 
 class Block(BaseXmlModel, tag='block'):
-    items: List[Item] = element(tag='item')
+    items: Union[List[Item], None] = element(tag='item')
+
+    def get_blocks(self):
+        if not self.items:
+            return []
+        subblocks = []
+        for item in self.items:
+            if item.item_type == 'A':
+                subblocks += [item.subblock]
+        return subblocks
+
 
 
 class DataBlock(Base):
     """Language model"""
     block = Column('block', Integer, nullable=False)
-    #version = Column('version', SmallInteger, nullable=False)
+    version = Column('version', SmallInteger, nullable=False)
 
     _contents = Column('contents', LargeBinary, nullable=True)   
     #created_at = Column('created_at', DATETIME, nullable=True)
@@ -86,6 +96,13 @@ class DataBlock(Base):
         block = Block.from_xml(self._contents.decode('utf-8'))
         return block
     
+    def get_blocks(self):
+        try:
+            block = Block.from_xml(self._contents.decode('utf-8'))
+        except Exception as e:
+            return f'Error in block: {e}'
+        return block.get_blocks()
+    
     @contents.setter
     def contents(self, value):
         contents = Block.parse_obj(value)    
@@ -94,7 +111,7 @@ class DataBlock(Base):
 
     __tablename__ = 'DataBlock'
     __table_args__ = (
-        PrimaryKeyConstraint(block), #, version        
+        PrimaryKeyConstraint(block, version),       
     )
 
 #    def findUnits(self):        

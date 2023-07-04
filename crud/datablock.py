@@ -3,23 +3,48 @@ from sqlalchemy.orm import Session
 from models.datablock import DataBlock
 from models.sequences import Sequence, SequenceData
 from schemas.datablock import DatablockCreate, DatablockUpdate
+from crud.langcrud import get_lang
 
 
 
-def get_datablock_location_sequences(db: Session, block: int):
 
-    pass
+def get_latest_datablock(db: Session, block: int):
+
+    blocks = db.query(DataBlock).filter(DataBlock.block==block).order_by(DataBlock.version.desc())
+    return blocks.all()[0]
+
+
+def get_datablock_with_children(db: Session, block: int):
+
+    datablock = get_latest_datablock(db=db, block=block)
+    datablockdict = {}
+    datablockdict['id'] = datablock.block
+    childrenlist = []
     
+    allsubblocks = datablock.get_blocks()
+    if datablock.details:
+        details = datablock.details.strip().split(',')
+        if details:
+            allsubblocks += details
+    for subblock in allsubblocks:
+        childrenlist += [get_datablock_with_children(db=db, block=int(subblock))]
+    datablockdict['blockchildren'] = childrenlist 
+    return datablockdict
 
-def get_datablock_location_sequences(db: Session, block: int):
 
-    blockobj = db.query(DataBlock).get(block)
-    sequences = db.query(SequenceData).filter(SequenceData.block==block)
-    if sequences.count() < 1:
-        return False
-    #if sequences.count() == 1:
 
-    
+def get_datablocks_by_sequence(db: Session, sequence: int):
+
+    sequencedatas = db.query(SequenceData).filter(SequenceData.sequence==sequence)
+    blocks = []
+    for sqdata in sequencedatas.all():
+        block = get_datablock_with_children(db=db, block=sqdata.block)
+        blocks += [block]
+    return blocks
+
+
+
+
 
 
 def get_datablock(db: Session, block: int, version: int):
