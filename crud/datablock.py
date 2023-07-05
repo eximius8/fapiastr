@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Session
 
 from models.datablock import DataBlock
-from models.sequences import Sequence, SequenceData
+from models.sequences import SequenceData
 from schemas.datablock import DatablockCreate, DatablockUpdate
 from crud.langcrud import get_lang
-
+import re
+import uuid
 
 
 
@@ -18,17 +19,21 @@ def get_datablock_with_children(db: Session, block: int):
 
     datablock = get_latest_datablock(db=db, block=block)
     datablockdict = {}
-    datablockdict['id'] = datablock.block
+    datablockdict['id'] = uuid.uuid4().hex
+    datablockdict['id2'] = datablock.block
+    datablockdict['type'] = 'block'
+    datablockdict['name'] = f'block {datablock.block}'
     childrenlist = []
     
     allsubblocks = datablock.get_blocks()
     if datablock.details:
-        details = datablock.details.strip().split(',')
+        details = re.split('[\s,;]+', datablock.details.strip())
         if details:
             allsubblocks += details
     for subblock in allsubblocks:
         childrenlist += [get_datablock_with_children(db=db, block=int(subblock))]
-    datablockdict['blockchildren'] = childrenlist 
+    if childrenlist:
+        datablockdict['children'] = childrenlist 
     return datablockdict
 
 
