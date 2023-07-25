@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import langs, versions, datablocks, dictionar, lists
+from routers import langs, versions, datablocks, dictionar, lists, sequences
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
@@ -24,6 +24,7 @@ app.include_router(versions.router, tags=["versions"])
 app.include_router(datablocks.router, tags=["datablocks"])
 app.include_router(dictionar.router, tags=["dictionaries"])
 app.include_router(lists.router, tags=["lists"])
+app.include_router(sequences.router, tags=["sequences"])
 
 
 
@@ -41,5 +42,5 @@ class SPAStaticFiles(StaticFiles):
 
 
 # uvicorn main:app --reload
-if __name__ == "__main__": 
-    uvicorn.run(app, host="0.0.0.0", workers=1, port=8001)
+#if __name__ == "__main__": 
+#    uvicorn.run(app, host="0.0.0.0", workers=1, port=8001)

@@ -11,7 +11,7 @@ import uuid
 
 def get_latest_datablock(db: Session, block: int):
 
-    blocks = db.query(DataBlock).filter(DataBlock.block==block).order_by(DataBlock.version.desc())
+    blocks = db.query(DataBlock).filter(DataBlock.block==block)#.order_by(DataBlock.version.desc())
     return blocks.all()[0]
 
 
@@ -23,6 +23,8 @@ def get_datablock_with_children(db: Session, block: int):
     datablockdict['id2'] = datablock.block
     datablockdict['type'] = 'block'
     datablockdict['name'] = f'block {datablock.block}'
+    if datablock.dna_title: 
+        datablockdict['name'] += f': {get_lang(db=db, dna=datablock.dna_title).en}'
     childrenlist = []
     
     allsubblocks = datablock.get_blocks()
@@ -31,7 +33,8 @@ def get_datablock_with_children(db: Session, block: int):
         if details:
             allsubblocks += details
     for subblock in allsubblocks:
-        childrenlist += [get_datablock_with_children(db=db, block=int(subblock))]
+        childrenlist += [get_datablock_with_children(db=db, block=int(subblock))]       
+        
     if childrenlist:
         datablockdict['children'] = childrenlist 
     return datablockdict

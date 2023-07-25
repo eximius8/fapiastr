@@ -7,9 +7,9 @@ from crud.langcrud import get_lang
 from crud.datablock import get_datablocks_by_sequence
 
 
-def get_root_sequences(db: Session, parent):
+def get_root_sequences(db: Session, parent: int):
     """RECURSIVE!"""
-
+    
     seqns = db.query(Sequence).filter(Sequence.parent==parent, Sequence.setname=='Full')
     if seqns.count() < 1:
         return []
