@@ -23,6 +23,7 @@ def get_datablock_with_children(db: Session, block: int):
     datablockdict['id2'] = datablock.block
     datablockdict['type'] = 'block'
     datablockdict['name'] = f'block {datablock.block}'
+    datablockdict['description'] = datablock.description
     if datablock.dna_title: 
         datablockdict['name'] += f': {get_lang(db=db, dna=datablock.dna_title).en}'
     childrenlist = []
@@ -49,9 +50,6 @@ def get_datablocks_by_sequence(db: Session, sequence: int):
         block = get_datablock_with_children(db=db, block=sqdata.block)
         blocks += [block]
     return blocks
-
-
-
 
 
 
