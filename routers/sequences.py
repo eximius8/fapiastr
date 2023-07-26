@@ -10,7 +10,7 @@ router = APIRouter()
 
 def sortedDeep(d):
     if isinstance(d,list):
-        return sorted([sortedDeep(v) for v in d], key=lambda d: d['id2'])
+        return sorted([sortedDeep(v) for v in d], key=lambda d: d['id2'] + (d['type'] == 'block')*10000)
     if isinstance(d, dict):
         if 'children' in d:
             newd = d
