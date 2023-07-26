@@ -7,10 +7,10 @@ from crud.langcrud import get_lang
 from crud.datablock import get_datablocks_by_sequence
 
 
-def get_root_sequences(db: Session, parent: int):
+def get_root_sequences(db: Session, parent: int, setname: str = 'Full'):
     """RECURSIVE!"""
     
-    seqns = db.query(Sequence).filter(Sequence.parent==parent, Sequence.setname=='Full')
+    seqns = db.query(Sequence).filter(Sequence.parent==parent, Sequence.setname==setname)
     if seqns.count() < 1:
         return []
     seqlist = []
@@ -24,6 +24,6 @@ def get_root_sequences(db: Session, parent: int):
         seqdict['license'] = sqen.licensed
         seqdict['sset'] = sqen.sset
         seqdict['control'] = sqen.control
-        seqdict['children'] = get_root_sequences(db=db, parent=sqen.id) + get_datablocks_by_sequence(db=db, sequence=sqen.id)
+        seqdict['children'] = get_root_sequences(db=db, parent=sqen.id, setname=setname) + get_datablocks_by_sequence(db=db, sequence=sqen.id)
         seqlist += [{**seqdict}]
     return seqlist
