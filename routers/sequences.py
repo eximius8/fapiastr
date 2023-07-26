@@ -14,4 +14,4 @@ async def read_sequences(db: Session = Depends(get_db)):
     
     sequences = get_root_sequences(db=db, parent=0)
     
-    return sequences
+    return sorted(sequences, key=lambda d: d['id2'])
