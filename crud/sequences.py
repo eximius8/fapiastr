@@ -23,6 +23,7 @@ def get_root_sequences(db: Session, parent: int):
         seqdict['type'] = 'sequence'
         seqdict['license'] = sqen.licensed
         seqdict['sset'] = sqen.sset
+        seqdict['control'] = sqen.control
         seqdict['children'] = get_root_sequences(db=db, parent=sqen.id) + get_datablocks_by_sequence(db=db, sequence=sqen.id)
         seqlist += [{**seqdict}]
     return seqlist
