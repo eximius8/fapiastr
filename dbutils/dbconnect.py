@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-devdb = False
+devdb = True
 
 LOGIN = os.getenv('DB_LOGIN', 'dba')
 
