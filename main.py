@@ -12,7 +12,7 @@ from dbutils.dbconnect import API_URL
    
 
 app = FastAPI(
-    docs_url=f'/{API_URL}/docs'
+    docs_url=f'{API_URL}/docs'
 )
 
 app.add_middleware(
