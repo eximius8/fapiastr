@@ -14,7 +14,7 @@ from dbutils.dbconnect import get_db
 
 
 router = APIRouter(
-    prefix='datablock'
+    prefix='/datablock'
 )
 
 
@@ -45,13 +45,13 @@ def read_datablocks(
     return {"count": count, "items": datablocks}
     
 
-@router.post("", response_model=Datablock)
+@router.post("/", response_model=Datablock)
 def create_datablock(datablock: DatablockCreate, db: Session = Depends(get_db)):   
 
     return cruddatablock.create_datablock(db=db, datablock=datablock)
 
 
-@router.patch("{block}/{version}", response_model=Datablock)
+@router.patch("/{block}/{version}", response_model=Datablock)
 async def update_datablock(block: int, version: int, datablock: DatablockUpdate, db: Session = Depends(get_db)):
 
     return cruddatablock.update_datablock(db=db, version=version, block=block, datablock=datablock)
