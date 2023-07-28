@@ -15,9 +15,11 @@ devdb = True
 LOGIN = os.getenv('DB_LOGIN', 'dba')
 
 if devdb:
+    API_URL = os.getenv('DEV_API_URL')
     PASSWD = os.getenv('DEV_DB_PASSWD', 'soot')
     DBNAME = os.getenv('DEV_DB_NAME', 'astraiadev')
 else:
+    API_URL = os.getenv('PROD_API_URL')
     PASSWD = os.getenv('PROD_DB_PASSWD', 'schwabing')
     DBNAME = os.getenv('PROD_DB_NAME', 'astraiaprod')
 

@@ -4,12 +4,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 import os
-from starlette.responses import FileResponse 
+from starlette.responses import FileResponse
+from dbutils.dbconnect import API_URL
+
 
 
    
 
-app = FastAPI()
+app = FastAPI(
+    docs_url=f'/{API_URL}/docs'
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,12 +23,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(langs.router, tags=["langs"])
-app.include_router(versions.router, tags=["versions"])
-app.include_router(datablocks.router, tags=["datablocks"])
-app.include_router(dictionar.router, tags=["dictionaries"])
-app.include_router(lists.router, tags=["lists"])
-app.include_router(sequences.router, tags=["sequences"])
+app.include_router(langs.router, tags=["langs"], prefix=API_URL)
+app.include_router(versions.router, tags=["versions"], prefix=API_URL)
+app.include_router(datablocks.router, tags=["datablocks"], prefix=API_URL)
+app.include_router(dictionar.router, tags=["dictionaries"], prefix=API_URL)
+app.include_router(lists.router, tags=["lists"], prefix=API_URL)
+app.include_router(sequences.router, tags=["sequences"], prefix=API_URL)
 
 
 
