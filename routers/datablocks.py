@@ -24,9 +24,9 @@ def read_datablockxml(block: int, version: int, db: Session = Depends(get_db)):
     return datablock
 
 
-@router.get("/api/datablock/{block}/{version}", response_model=Datablock)
-def read_datablock(block: int, version: int, db: Session = Depends(get_db)):
-    datablock = cruddatablock.get_datablock(db, block=block, version=version)
+@router.get("/api/datablock/{block}", response_model=Datablock)
+def read_datablock(block: int, db: Session = Depends(get_db)):
+    datablock = cruddatablock.get_datablock(db, block=block)
     if datablock is None:
         raise HTTPException(status_code=404, detail="datablock not found")
     return datablock

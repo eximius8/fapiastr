@@ -19,7 +19,7 @@ class ItemAll(ItemCommonAll):
 
 # Specific itmes only 
 class Item(ItemCommon):    
-    pk: str = attr(name='id', max_length=4, regex=r'^[1-9](\d+)?$')
+   # pk: str = attr(name='id', max_length=4, regex=r'^[1-9](\d+)?$')
     
     def dict(self, *args, **kwargs):
         
@@ -64,7 +64,7 @@ class DatablockUpdate(DatablockBase):
 
 class Datablock(DatablockBase):
     block: int
-    version: int
+    
     contents: Block 
 
     class Config:

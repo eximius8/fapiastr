@@ -33,8 +33,8 @@ def get_datablock_with_children(db: Session, block: int):
         details = re.split('[\s,;]+', datablock.details.strip())
         if details:
             allsubblocks += details
-    for subblock in allsubblocks:
-        childrenlist += [get_datablock_with_children(db=db, block=int(subblock))]       
+    for subblock in allsubblocks:       
+        childrenlist += [get_datablock_with_children(db=db, block=int(subblock))]         
         
     if childrenlist:
         datablockdict['children'] = childrenlist 
@@ -53,8 +53,8 @@ def get_datablocks_by_sequence(db: Session, sequence: int):
 
 
 
-def get_datablock(db: Session, block: int, version: int):
-    return db.query(DataBlock).get((block, version))
+def get_datablock(db: Session, block: int):
+    return db.query(DataBlock).get(block)
 
 
 def get_datablocks(db: Session, skip: int = 0, limit: int = 100, search: str = ""):
