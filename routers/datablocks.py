@@ -14,7 +14,7 @@ from dbutils.dbconnect import get_db
 
 
 router = APIRouter(
-    prefix='datablock'
+    prefix='/datablock'
 )
 
 
