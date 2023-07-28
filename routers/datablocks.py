@@ -13,10 +13,12 @@ from dbutils.dbconnect import get_db
 
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix='datablock'
+)
 
 
-@router.get("/api/datablock/xml/{block}/{version}")
+@router.get("/xml/{block}/{version}")
 def read_datablockxml(block: int, version: int, db: Session = Depends(get_db)):
     datablock = cruddatablock.get_datablock(db, block=block, version=version)
     if datablock is None:
@@ -24,7 +26,7 @@ def read_datablockxml(block: int, version: int, db: Session = Depends(get_db)):
     return datablock
 
 
-@router.get("/api/datablock/{block}", response_model=Datablock)
+@router.get("/{block}", response_model=Datablock)
 def read_datablock(block: int, db: Session = Depends(get_db)):
     datablock = cruddatablock.get_datablock(db, block=block)
     if datablock is None:
@@ -32,7 +34,7 @@ def read_datablock(block: int, db: Session = Depends(get_db)):
     return datablock
 
 
-@router.get("/api/datablock/", response_model=DataBlockList)
+@router.get("/", response_model=DataBlockList)
 def read_datablocks(
         db: Session = Depends(get_db), 
         search: Union[str, None] = None,
@@ -43,46 +45,13 @@ def read_datablocks(
     return {"count": count, "items": datablocks}
     
 
-@router.post("/api/datablock/", response_model=Datablock)
+@router.post("", response_model=Datablock)
 def create_datablock(datablock: DatablockCreate, db: Session = Depends(get_db)):   
 
     return cruddatablock.create_datablock(db=db, datablock=datablock)
 
 
-@router.patch("/api/datablock/{block}/{version}", response_model=Datablock)
+@router.patch("{block}/{version}", response_model=Datablock)
 async def update_datablock(block: int, version: int, datablock: DatablockUpdate, db: Session = Depends(get_db)):
 
     return cruddatablock.update_datablock(db=db, version=version, block=block, datablock=datablock)
-
-
-
-
-#@router.get("/api/datablock/")
-#async def list_datablocks(
-#        start: int = 0, 
-#        limit: int = 10, 
-#    ):
-#    session = loadSession()
-#    datablocks = session.query(DataBlock)   
-#    datablocks = datablocks.all()
-#    lengt = len(datablocks)
-#    datablocks = datablocks[start:start+limit]
-#    session.close()
-#    return {"count": lengt, "next": start+limit, "items": datablocks}
-#
-#
-#@router.get("/api/datablock/{block}-{version}")
-#async def read_block(
-#        block: int,
-#        version: int
-#    ):
-#
-#    session = loadSession()
-#    datablock = session.query(DataBlock).get((block, version))
-#    if datablock is None:
-#        return {'error': 'Does not exist'}
-#    session.close()
-#    dict_data = xmltodict.parse(datablock.contents) 
-#    return datablock
-#    return {'main': datablock, 'contents': dict_data['block']['item']}
-#
